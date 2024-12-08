@@ -10,14 +10,15 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 
+// Context to provide user state and auth functions
 export const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // Add error state
+  const [error, setError] = useState(null); // Error state for handling authentication errors
 
-  // Create user function
+  // Function to create a new user
   const createUser = async (email, password, name, photoURL) => {
     setLoading(true);
     try {
@@ -30,88 +31,99 @@ const AuthProvider = ({ children }) => {
         photoURL: photoURL,
       });
 
-      setUser(user); // Update user state
+      setUser(user); // Update the user state with the newly created user
       return user;
     } catch (error) {
       console.error("Error creating user:", error);
-      setError(error.message); // Set error message
+      setError(error.message); // Set error message to be displayed
       throw error;
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading to false when done
     }
   };
 
-  // Sign in user function
+  // Function to sign in a user
   const signInUser = async (email, password) => {
     setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
-      setUser(user); // Update user state
+      setUser(user); // Update the user state after successful sign-in
       return user;
     } catch (error) {
       console.error("Error signing in:", error);
-      setError(error.message); // Set error message
+      setError(error.message); // Set error message to be displayed
       throw error;
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading to false when done
     }
   };
 
-  // Sign out function
+  // Function to sign out the user
   const signOutUser = async () => {
     try {
-      await signOut(auth); // Firebase signOut function
-      setUser(null); // Clear user from state
+      await signOut(auth); // Sign out the user from Firebase
+      setUser(null); // Clear the user state
     } catch (error) {
       console.error("Error signing out:", error);
     }
   };
 
+  // Google Authentication Provider
   const googleProvider = new GoogleAuthProvider();
 
-const signInWithGoogle = async () => {
-  setLoading(true);
-  try {
-    const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
+  // Function to sign in with Google
+  const signInWithGoogle = async () => {
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      setUser(user); // Update user state with Google login details
+      return user;
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+      setError(error.message); // Set error message to be displayed
+      throw error;
+    } finally {
+      setLoading(false); // Set loading to false when done
+    }
+  };
 
-    setUser(user); // Update user state
-    return user;
-  } catch (error) {
-    console.error("Error signing in with Google:", error);
-    setError(error.message); // Set error message
-    throw error;
-  } finally {
-    setLoading(false);
-  }
-};
-
-  // Firebase auth state listener to handle user persistence
+  // Firebase Auth state listener to maintain session persistence
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
+      setUser(currentUser); // Update the user state whenever the authentication state changes
+      setLoading(false); // Set loading to false when done checking auth state
     });
 
-    return () => unsubscribe(); // Cleanup on unmount
+    return () => unsubscribe(); // Cleanup the listener on component unmount
   }, []);
 
+  // Context value to expose user state and auth functions
   const userInfo = {
     user,
     loading,
     error,
     createUser,
-    signInUser, // Expose signInUser function
-    signOutUser, // Expose signOutUser function
-    signInWithGoogle
+    signInUser,
+    signOutUser,
+    signInWithGoogle,
   };
 
   return (
     <AuthContext.Provider value={userInfo}>
-      {children}
+      {children} {/* Render children with access to the auth context */}
     </AuthContext.Provider>
+  );
+};
+
+// Display error messages to the user
+const ErrorMessage = ({ error }) => {
+  if (!error) return null;
+  return (
+    <div style={{ color: 'red', padding: '10px', backgroundColor: '#f8d7da' }}>
+      {error}
+    </div>
   );
 };
 

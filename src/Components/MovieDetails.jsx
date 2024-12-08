@@ -1,115 +1,85 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const MovieDetails = () => {
-  const { id } = useParams();
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const { id } = useParams(); // Get movie ID from URL
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchMovie = async () => {
+    const fetchMovieDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/movies/${id}`);
-        const data = await response.json();
-        setMovie(data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching movie details:', error);
+        const response = await axios.get(`http://localhost:5000/movies/${id}`);
+        if (response.data) {
+          setMovie(response.data);
+        } else {
+          setError('Movie not found');
+        }
+      } catch (err) {
+        setError('Failed to load movie details');
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchMovie();
+    fetchMovieDetails();
   }, [id]);
 
-  const deleteMovie = async () => {
+  const handleDeleteMovie = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/movies/${id}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        navigate('/all-movies');
-      } else {
-        console.error('Failed to delete movie');
-      }
-    } catch (error) {
-      console.error('Error deleting movie:', error);
+      await axios.delete(`http://localhost:5000/movies/${id}`);
+      navigate('/all-movies'); // Navigate back to all movies page
+    } catch (err) {
+      setError('Failed to delete movie');
     }
   };
 
-  const addToFavorite = async () => {
+  const handleAddToFavorites = async () => {
     try {
-      const response = await fetch('http://localhost:5000/favorites', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: 'user@example.com', // Replace with user's email from context
-          movie,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        alert(errorData.message || 'Failed to add to favorites');
-        return;
-      }
-
-      alert('Movie added to favorites!');
-    } catch (error) {
-      console.error('Error adding to favorites:', error);
-      alert('An error occurred while adding to favorites');
+      await axios.post('http://localhost:5000/favorites', { movieId: id });
+      alert('Movie added to favorites');
+    } catch (err) {
+      setError('Failed to add movie to favorites');
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return <div>Loading movie details...</div>;
+  }
 
-  if (!movie) return <div>Movie not found</div>;
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
 
   return (
-    <div className='bg-gradient-to-br from-gray-900 via-gray-800 to-black'>
-    <div className="min-h-screen flex items-center justify-center text-white">
-      <div className="w-full max-w-4xl bg-gray-800 p-6 rounded-lg shadow-lg">
-        <img
-          src={movie.posterUrl}
-          alt={movie.title}
-          className="w-full h-80 object-cover rounded-t-lg"
-        />
-        <div className="mt-4">
-          <h1 className="text-4xl font-bold">{movie.title}</h1>
-          <p className="text-lg mt-2">Genre: {movie.genre}</p>
-          <p className="text-lg">Duration: {movie.duration} mins</p>
-          <p className="text-lg">Release Year: {movie.releaseYear}</p>
-          <p className="text-lg">Rating: {movie.rating}/10</p>
-          <p className="text-lg mt-4">{movie.summary}</p>
+    <div className="p-6 bg-gray-900">
+      <h2 className="text-3xl text-center font-bold mb-4">{movie.title}</h2>
+      <img src={movie.posterUrl} alt={movie.title} className="w-full h-96 object-cover mb-4" />
+      <p className='text-gray-400'><strong>Genre:</strong> {movie.genre}</p>
+      <p className='text-gray-400'><strong>Duration:</strong> {movie.duration} mins</p>
+      <p className='text-gray-400'><strong>Release Year:</strong> {movie.releaseYear}</p>
+      <p className='text-gray-400'><strong>Rating:</strong> {movie.rating}</p>
+      <p className='text-gray-400'><strong>Description:</strong> {movie.description}</p>
 
-          {/* Buttons for deleting and adding to favorites */}
-          <div className="mt-6 flex space-x-4">
-            <button
-              onClick={deleteMovie}
-              className="bg-red-600 hover:bg-red-500 text-white py-2 px-6 rounded-lg"
-            >
-              Delete Movie
-            </button>
-            <button
-              onClick={addToFavorite}
-              className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-6 rounded-lg"
-            >
-              Add to Favorite
-            </button>
-          </div>
-        </div>
+      <div className="mt-4">
+        <button
+          onClick={handleDeleteMovie}
+          className="px-6 py-3 bg-red-500 text-white rounded hover:bg-red-600 mr-4"
+        >
+          Delete Movie
+        </button>
+
+        <button
+          onClick={handleAddToFavorites}
+          className="px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Add to Favorites
+        </button>
       </div>
     </div>
-    <div className="text-end mt-5 pb-10 pr-10">
-      <button
-        onClick={() => navigate("/all-movies")}
-        className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-6 rounded-lg text-lg"
-      >
-        See All Movies
-      </button>
-    </div>
-  </div>
   );
 };
 

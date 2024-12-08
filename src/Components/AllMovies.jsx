@@ -15,7 +15,7 @@ const AllMovies = () => {
         const response = await fetch('http://localhost:5000/movies');
         if (response.ok) {
           const data = await response.json();
-          setMovies(data); // Set the fetched movies
+          setMovies(data.movies); // Assuming the response has a 'movies' field
         } else {
           console.error('Failed to fetch movies');
         }
@@ -86,10 +86,10 @@ const AllMovies = () => {
                 <p className="mt-2 text-gray-400">Email: {movie.email}</p>
               </div>
               <Link to={`/movie-details/${movie._id}`}>
-                    <button className="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg">
-                      See Details
-                    </button>
-                  </Link>
+                <button className="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg">
+                  See Details
+                </button>
+              </Link>
             </div>
           ))
         ) : (

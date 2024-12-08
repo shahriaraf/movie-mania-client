@@ -17,6 +17,8 @@ import Login from './Components/Login';
 import Register from './Components/Register';
 import FavoriteMovies from './Components/FavoriteMovies';
 import TvSeries from './Components/TvSeries';
+import PrivateRoute from './Components/PrivateRoute';
+import UpdateMovie from './Components/UpdateMovie';
 
 
 
@@ -36,11 +38,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/add-movies",
-        element: <AddMovie></AddMovie>, // Home is the main page
+        element: <PrivateRoute><AddMovie></AddMovie></PrivateRoute>, // Home is the main page
       },
       {
         path: "/movie-details/:id",
-        element: <MovieDetails></MovieDetails>, // Home is the main page
+        element: <PrivateRoute><MovieDetails></MovieDetails></PrivateRoute>, // Home is the main page
       },
       {
         path: "/login",
@@ -52,12 +54,16 @@ const router = createBrowserRouter([
       },
       {
         path: "/favorite-movies",
-        element: <FavoriteMovies></FavoriteMovies>// Home is the main page
+        element: <PrivateRoute><FavoriteMovies></FavoriteMovies></PrivateRoute>// Home is the main page
       },
       {
         path: "/tv-series",
         element: <TvSeries></TvSeries>// Home is the main page
       },
+      {
+        path: "/update-movie/:id",
+        element: <PrivateRoute><UpdateMovie></UpdateMovie></PrivateRoute>// Home is the main page
+      }
 
     ]
   },

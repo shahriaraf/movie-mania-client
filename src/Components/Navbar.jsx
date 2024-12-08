@@ -70,6 +70,9 @@ const Navbar = () => {
                   Home
                 </Link>
               </li>
+
+              {/* Conditionally render Movies, TV Series, etc. based on user login */}
+             
               <li className="text-[16px] hover:bg-gray-200 rounded-md hover:text-black">
                 <Link to="all-movies" onClick={closeDrawer}>
                   Movies
@@ -80,16 +83,22 @@ const Navbar = () => {
                   TV Series
                 </Link>
               </li>
-              <li className="text-[16px] hover:bg-gray-200 rounded-md hover:text-black">
-                <Link to="add-movies" onClick={closeDrawer}>
-                  Add Movies
-                </Link>
-              </li>
-              <li className="text-[16px] hover:bg-gray-200 rounded-md hover:text-black">
-                <Link to="favorite-movies" onClick={closeDrawer}>
-                  Favorite Movies
-                </Link>
-              </li>
+              {user && (
+                <>
+                  <li className="text-[16px] hover:bg-gray-200 rounded-md hover:text-black">
+                    <Link to="add-movies" onClick={closeDrawer}>
+                      Add Movies
+                    </Link>
+                  </li>
+                  <li className="text-[16px] hover:bg-gray-200 rounded-md hover:text-black">
+                    <Link to="favorite-movies" onClick={closeDrawer}>
+                      Favorite Movies
+                    </Link>
+                  </li>
+                </>
+              )}
+
+              {/* Render login/register options if user is not logged in */}
               {!user ? (
                 <>
                   <li className="text-[16px] hover:bg-gray-200 rounded-md hover:text-black">
@@ -124,18 +133,27 @@ const Navbar = () => {
           <li className="text-[16px] hover:bg-gray-200 rounded-md hover:text-black">
             <Link to="">Home</Link>
           </li>
+
+          {/* Conditionally render Movies, TV Series, etc. based on user login */}
+         
           <li className="text-[16px] hover:bg-gray-200 rounded-md hover:text-black">
             <Link to="all-movies">Movies</Link>
           </li>
           <li className="text-[16px] hover:bg-gray-200 rounded-md hover:text-black">
             <Link to="tv-series">TV Series</Link>
           </li>
-          <li className="text-[16px] hover:bg-gray-200 rounded-md hover:text-black">
-            <Link to="add-movies">Add Movies</Link>
-          </li>
-          <li className="text-[16px] hover:bg-gray-200 rounded-md hover:text-black">
-            <Link to="favorite-movies">Favorite Movies</Link>
-          </li>
+          {user && (
+            <>
+              <li className="text-[16px] hover:bg-gray-200 rounded-md hover:text-black">
+                <Link to="add-movies">Add Movies</Link>
+              </li>
+              <li className="text-[16px] hover:bg-gray-200 rounded-md hover:text-black">
+                <Link to="favorite-movies">Favorite Movies</Link>
+              </li>
+            </>
+          )}
+
+          {/* Render login/register options if user is not logged in */}
           {!user ? (
             <>
               <li className="text-[16px] hover:bg-gray-200 rounded-md hover:text-black">

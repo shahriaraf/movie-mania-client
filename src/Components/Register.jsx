@@ -44,6 +44,7 @@ const Register = () => {
       .then((result) => {
         console.log("User created successfully:", result);
         setSuccessMessage("Registration successful! Please log in.");
+        navigate("/");
 
         // Reset the form after successful user creation
         e.target.reset();
