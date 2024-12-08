@@ -13,7 +13,7 @@ const FavoriteMovies = () => {
     useEffect(() => {
         const fetchFavorites = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/favorites/${user.email}`);
+                const response = await fetch(`https://movie-mania-server-o47gvq2qo-shoumo-shahriar-arafs-projects.vercel.app/favorites/${user.email}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch favorites');
                 }
@@ -32,15 +32,15 @@ const FavoriteMovies = () => {
 
     // Handle delete favorite movie
     const deleteFavorite = async (movieId) => {
-        console.log('Deleting favorite with Movie ID:', movieId); // Debug log
+        ('Deleting favorite with Movie ID:', movieId); // Debug log
         try {
-          const response = await fetch(`http://localhost:5000/favorites/${movieId}`, {
+          const response = await fetch(`https://movie-mania-server-o47gvq2qo-shoumo-shahriar-arafs-projects.vercel.app/favorites/${movieId}`, {
             method: 'DELETE',
           });
       
           if (response.ok) {
             setFavorites(favorites.filter((fav) => fav.movie._id !== movieId));
-            console.log('Favorite deleted successfully'); // Debug log
+            ('Favorite deleted successfully'); // Debug log
           } else {
             throw new Error('Failed to delete favorite');
           }

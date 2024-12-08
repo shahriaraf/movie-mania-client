@@ -38,11 +38,11 @@ const Register = () => {
       return;
     }
 
-    console.log("Sign up", { name, photo, email, password });
+    ("Sign up", { name, photo, email, password });
 
     createUser(email, password, name, photo)
       .then((result) => {
-        console.log("User created successfully:", result);
+        ("User created successfully:", result);
         setSuccessMessage("Registration successful! Please log in.");
         navigate("/");
 

@@ -1,0 +1,27 @@
+# Query: console.log
+# ContextLines: 1
+
+5 results - 3 files
+
+src\Components\AddMovie.jsx:
+  116            const data = await response.json();
+  117:          
+  118            toast.success('Movie added successfully!');
+
+src\Components\FavoriteMovies.jsx:
+  34      const deleteFavorite = async (movieId) => {
+  35:        
+  36          try {
+
+  42              setFavorites(favorites.filter((fav) => fav.movie._id !== movieId));
+  43:            
+  44            } else {
+
+src\Components\Register.jsx:
+  40  
+  41:    
+  42  
+
+  44        .then((result) => {
+  45:        
+  46          setSuccessMessage("Registration successful! Please log in.");

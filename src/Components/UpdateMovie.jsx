@@ -1,38 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const UpdateMovie = () => {
-  const { id } = useParams(); // Get the movie ID from the route parameters
+  const { id } = useParams(); // Get movie ID from URL
   const navigate = useNavigate();
-  const [movie, setMovie] = useState(null);
+  const [movieData, setMovieData] = useState(null);
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [formData, setFormData] = useState({
-    title: "",
-    genre: "",
-    rating: 0,
-    description: "",
-  });
 
-  // Fetch the movie details by ID
+  // Fetch the existing movie data
   useEffect(() => {
     const fetchMovie = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/movies/${id}`); // Update with your API endpoint
-        if (!response.ok) {
-          throw new Error("Failed to fetch movie details");
-        }
+        const response = await fetch(`https://movie-mania-server-o47gvq2qo-shoumo-shahriar-arafs-projects.vercel.app/movies/${id}`);
+        if (!response.ok) throw new Error('Failed to fetch movie details');
         const data = await response.json();
-        setMovie(data);
-        setFormData({
-          title: data.title,
-          genre: data.genre,
-          rating: data.rating || 0,
-          description: data.description || "",
-        });
-      } catch (err) {
-        console.error("Failed to fetch movie:", err.message);
-        setError("Failed to load movie details. Please try again later.");
+        setMovieData(data);
+      } catch (error) {
+        setError('Failed to load movie data');
       } finally {
         setLoading(false);
       }
@@ -41,133 +26,92 @@ const UpdateMovie = () => {
     fetchMovie();
   }, [id]);
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const updatedMovie = Object.fromEntries(formData.entries());
 
-    // Validate form fields
-    if (!formData.title || !formData.genre || formData.rating < 0 || formData.rating > 10) {
-      setError("Please provide valid inputs.");
+    // Validate inputs (similar to Add Movie form)
+    if (!updatedMovie.title || !updatedMovie.genre) {
+      setError('Title and Genre are required');
       return;
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/movies/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+      const response = await fetch(`https://movie-mania-server-o47gvq2qo-shoumo-shahriar-arafs-projects.vercel.app/movies/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedMovie),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to update movie");
-      }
-
-      alert("Movie updated successfully!");
-      navigate("/"); // Redirect to the homepage after successful update
-    } catch (err) {
-      console.error("Failed to update movie:", err.message);
-      setError("Failed to update movie. Please try again.");
+      if (!response.ok) throw new Error('Failed to update movie');
+      navigate('/'); // Redirect to the homepage or movie list
+    } catch (error) {
+      setError('Error updating movie');
     }
   };
 
-  // Handle form field changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "rating" ? parseFloat(value) : value,
-    }));
-  };
-
-  if (loading) {
-    return <div>Loading movie details...</div>;
-  }
-
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-lg p-8 bg-white shadow-lg rounded-md">
-        <h2 className="text-2xl font-bold mb-4 text-center">Update Movie</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="title" className="block font-medium">
-              Title
-            </label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="genre" className="block font-medium">
-              Genre
-            </label>
-            <input
-              type="text"
-              id="genre"
-              name="genre"
-              value={formData.genre}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="rating" className="block font-medium">
-              Rating (0-10)
-            </label>
-            <input
-              type="number"
-              id="rating"
-              name="rating"
-              value={formData.rating}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-              min="0"
-              max="10"
-              step="0.1"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="description" className="block font-medium">
-              Description
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-              rows="4"
-            />
-          </div>
-
-          {error && <div className="text-red-500">{error}</div>}
-
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white font-bold py-2 rounded hover:bg-blue-600 transition"
-          >
-            Update Movie
-          </button>
-        </form>
+    <form onSubmit={handleSubmit} className="p-6 bg-gray-800 text-white">
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-2">Title</label>
+        <input
+          type="text"
+          name="title"
+          defaultValue={movieData.title}
+          className="w-full p-2 border rounded-lg bg-gray-900 text-white"
+          required
+        />
       </div>
-    </div>
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-2">Genre</label>
+        <input
+          type="text"
+          name="genre"
+          defaultValue={movieData.genre}
+          className="w-full p-2 border rounded-lg bg-gray-900 text-white"
+          required
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-2">Duration</label>
+        <input
+          type="number"
+          name="duration"
+          defaultValue={movieData.duration}
+          className="w-full p-2 border rounded-lg bg-gray-900 text-white"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-2">Release Year</label>
+        <input
+          type="number"
+          name="releaseYear"
+          defaultValue={movieData.releaseYear}
+          className="w-full p-2 border rounded-lg bg-gray-900 text-white"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-2">Rating</label>
+        <input
+          type="number"
+          name="rating"
+          defaultValue={movieData.rating}
+          step="0.1"
+          max="10"
+          className="w-full p-2 border rounded-lg bg-gray-900 text-white"
+        />
+      </div>
+      <button
+        type="submit"
+        className="bg-green-600 hover:bg-green-500 py-2 px-6 rounded-lg"
+      >
+        Update Movie
+      </button>
+    </form>
   );
 };
 

@@ -12,7 +12,7 @@ const MovieDetails = () => {
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/movies/${id}`);
+        const response = await axios.get(`https://movie-mania-server-o47gvq2qo-shoumo-shahriar-arafs-projects.vercel.app/movies/${id}`);
         if (response.data) {
           setMovie(response.data);
         } else {
@@ -30,7 +30,7 @@ const MovieDetails = () => {
 
   const handleDeleteMovie = async () => {
     try {
-      await axios.delete(`http://localhost:5000/movies/${id}`);
+      await axios.delete(`https://movie-mania-server-o47gvq2qo-shoumo-shahriar-arafs-projects.vercel.app/movies/${id}`);
       navigate('/all-movies'); // Navigate back to all movies page
     } catch (err) {
       setError('Failed to delete movie');
@@ -39,7 +39,7 @@ const MovieDetails = () => {
 
   const handleAddToFavorites = async () => {
     try {
-      await axios.post('http://localhost:5000/favorites', { movieId: id });
+      await axios.post('https://movie-mania-server-o47gvq2qo-shoumo-shahriar-arafs-projects.vercel.app/favorites', { movieId: id });
       alert('Movie added to favorites');
     } catch (err) {
       setError('Failed to add movie to favorites');
@@ -79,6 +79,15 @@ const MovieDetails = () => {
           Add to Favorites
         </button>
       </div>
+      <div>
+      {/* Other movie details */}
+      <button
+        className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-6 rounded-lg mt-4"
+        onClick={() => navigate(`/update-movie/${movie._id}`)}
+      >
+        Update Movie
+      </button>
+    </div>
     </div>
   );
 };
