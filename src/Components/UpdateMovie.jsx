@@ -12,7 +12,7 @@ const UpdateMovie = () => {
   useEffect(() => {
     const fetchMovie = async () => {
       try {
-        const response = await fetch(`https://movie-mania-server-o47gvq2qo-shoumo-shahriar-arafs-projects.vercel.app/movies/${id}`);
+        const response = await fetch(`https://movie-mania-server-gules.vercel.app/${id}`);
         if (!response.ok) throw new Error('Failed to fetch movie details');
         const data = await response.json();
         setMovieData(data);
@@ -38,7 +38,7 @@ const UpdateMovie = () => {
     }
 
     try {
-      const response = await fetch(`https://movie-mania-server-o47gvq2qo-shoumo-shahriar-arafs-projects.vercel.app/movies/${id}`, {
+      const response = await fetch(`https://movie-mania-server-gules.vercel.app/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedMovie),

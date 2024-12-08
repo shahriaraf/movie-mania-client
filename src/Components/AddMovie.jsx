@@ -104,7 +104,7 @@ const AddMovie = () => {
       setLoading(true); // Start loading state
 
       try {
-        const response = await fetch('https://movie-mania-server-o47gvq2qo-shoumo-shahriar-arafs-projects.vercel.app/movies', {
+        const response = await fetch('https://movie-mania-server-gules.vercel.app', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

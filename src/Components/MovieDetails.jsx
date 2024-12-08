@@ -12,7 +12,7 @@ const MovieDetails = () => {
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
-        const response = await axios.get(`https://movie-mania-server-o47gvq2qo-shoumo-shahriar-arafs-projects.vercel.app/movies/${id}`);
+        const response = await axios.get(`https://movie-mania-server-gules.vercel.app/${id}`);
         if (response.data) {
           setMovie(response.data);
         } else {
@@ -30,7 +30,7 @@ const MovieDetails = () => {
 
   const handleDeleteMovie = async () => {
     try {
-      await axios.delete(`https://movie-mania-server-o47gvq2qo-shoumo-shahriar-arafs-projects.vercel.app/movies/${id}`);
+      await axios.delete(`https://movie-mania-server-gules.vercel.app/${id}`);
       navigate('/all-movies'); // Navigate back to all movies page
     } catch (err) {
       setError('Failed to delete movie');
