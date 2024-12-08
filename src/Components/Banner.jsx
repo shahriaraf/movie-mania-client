@@ -40,7 +40,7 @@ const Banner = () => {
           <div
             key={index}
             className="flex-none w-full relative bg-gray-900 text-white"
-            style={{ height: "50vh" }} // Default height for larger screens
+            style={{ height: "90vh" }} // Default height for larger screens
           >
             {/* Movie Image */}
             <img
