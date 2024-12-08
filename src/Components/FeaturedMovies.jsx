@@ -12,7 +12,7 @@ const FeaturedMovies = () => {
   useEffect(() => {
     const fetchFeaturedMovies = async () => {
       try {
-        const response = await axios.get('https://movie-mania-server-gules.vercel.app/featured');
+        const response = await axios.get('https://movie-mania-server-gules.vercel.app/movies/featured');
         if (response.data.success) {
           setMovies(response.data.movies);
         } else {

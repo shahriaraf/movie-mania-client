@@ -12,7 +12,7 @@ const AllMovies = () => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await fetch('https://movie-mania-server-gules.vercel.app');
+        const response = await fetch('https://movie-mania-server-gules.vercel.app/movies');
         if (response.ok) {
           const data = await response.json();
           setMovies(data.movies); // Assuming the response has a 'movies' field
