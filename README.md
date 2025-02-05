@@ -67,7 +67,7 @@ npm or yarn installed
 
 Step 1: Clone the Repository
 
-git clone https://github.com/your-username/movie-mania.git
+git clone https://github.com/shahriaraf/movie-mania-client.git
 cd movie-mania
 
 Step 2: Install Dependencies
