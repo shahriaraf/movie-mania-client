@@ -1,6 +1,6 @@
 Movie Mania 🎥
 
-Live Site URL: Visit Movie Mania
+Live Site URL: https://movie-mania-4fc5b.web.app/
 
 Overview
 
